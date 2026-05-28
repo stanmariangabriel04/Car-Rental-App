@@ -1,0 +1,34 @@
+@model CarRentalApp.Models.Car
+@{ ViewData["Title"]="Editeaza masina"; }
+<div class="container py-4" style="max-width:700px">
+    <div class="admin-form-card">
+        <h2 class="fw-bold mb-4"><i class="fas fa-edit text-warning me-2"></i>Editeaza: @Model.Brand @Model.Model</h2>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id"/>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+            <div class="row mb-3">
+                <div class="col"><label asp-for="Brand" class="form-label fw-semibold">Brand</label><input asp-for="Brand" class="form-control"/></div>
+                <div class="col"><label asp-for="Model" class="form-label fw-semibold">Model</label><input asp-for="Model" class="form-control"/></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col"><label asp-for="Year" class="form-label fw-semibold">An</label><input asp-for="Year" class="form-control" type="number"/></div>
+                <div class="col"><label asp-for="PricePerDay" class="form-label fw-semibold">Pret/zi (RON)</label><input asp-for="PricePerDay" class="form-control" type="number" step="0.01"/></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col"><label asp-for="CarCategoryId" class="form-label fw-semibold">Categorie</label><select asp-for="CarCategoryId" asp-items="ViewBag.CarCategoryId" class="form-select"></select></div>
+                <div class="col"><label asp-for="LocationId" class="form-label fw-semibold">Locatie</label><select asp-for="LocationId" asp-items="ViewBag.LocationId" class="form-select"></select></div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {<div class="mb-2"><img src="@Model.ImageUrl" class="rounded" style="height:80px;object-fit:cover" onerror="this.style.display='none'"/></div>}
+            <input type="hidden" asp-for="ImageUrl"/>
+            <div class="mb-3"><label class="form-label fw-semibold">Imagine noua (optional)</label><input type="file" name="imageFile" class="form-control" accept="image/*"/></div>
+            <div class="mb-3"><label asp-for="Description" class="form-label fw-semibold">Descriere</label><textarea asp-for="Description" class="form-control" rows="3"></textarea></div>
+            <div class="mb-4"><div class="form-check form-switch"><input asp-for="IsAvailable" class="form-check-input"/><label asp-for="IsAvailable" class="form-check-label fw-semibold">Disponibila</label></div></div>
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-warning fw-bold px-4"><i class="fas fa-save me-2"></i>Salveaza</button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Anuleaza</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }

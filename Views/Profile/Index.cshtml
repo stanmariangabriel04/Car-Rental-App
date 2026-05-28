@@ -1,0 +1,43 @@
+@model ProfileViewModel
+@{ ViewData["Title"]="Profilul meu"; }
+<div class="container py-4" style="max-width:650px">
+    @if (ViewBag.Success != null)
+    {<div class="alert alert-success alert-dismissible fade show shadow-sm"><i class="fas fa-check-circle me-2"></i>@ViewBag.Success<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>}
+    <div class="profile-card">
+        <div class="profile-header text-center">
+            <div class="profile-avatar-wrap">
+                <img src="@(Model.ProfileImagePath ?? "/images/default-avatar.svg")" class="profile-avatar" id="avatarPreview" onerror="this.src='/images/default-avatar.svg'"/>
+                <label for="profileImageInput" class="avatar-edit-btn" title="Schimba fotografia"><i class="fas fa-camera"></i></label>
+            </div>
+            <h3 class="fw-bold mt-3 mb-0">@Model.FirstName @Model.LastName</h3>
+            <p class="text-muted">@Model.Email</p>
+        </div>
+        <hr/>
+        <form asp-action="Index" method="post" enctype="multipart/form-data">
+            <input type="file" name="ProfileImage" id="profileImageInput" class="d-none" accept="image/*"/>
+            <div class="row mb-3">
+                <div class="col">
+                    <label asp-for="FirstName" class="form-label fw-semibold">Prenume</label>
+                    <input asp-for="FirstName" class="form-control"/>
+                </div>
+                <div class="col">
+                    <label asp-for="LastName" class="form-label fw-semibold">Nume</label>
+                    <input asp-for="LastName" class="form-control"/>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Email</label>
+                <input value="@Model.Email" class="form-control" disabled/>
+                <small class="text-muted">Email-ul nu poate fi modificat</small>
+            </div>
+            <button type="submit" class="btn btn-warning fw-bold w-100 py-2"><i class="fas fa-save me-2"></i>Salveaza modificarile</button>
+        </form>
+    </div>
+</div>
+@section Scripts {
+<script>
+document.getElementById('profileImageInput').addEventListener('change', function(e){
+    const f=e.target.files[0];
+    if(f){const r=new FileReader();r.onload=ev=>document.getElementById('avatarPreview').src=ev.target.result;r.readAsDataURL(f);this.form.submit();}
+});
+</script>}

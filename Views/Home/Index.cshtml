@@ -1,0 +1,78 @@
+@model IEnumerable<CarRentalApp.Models.Car>
+@{ ViewData["Title"]="Acasa"; }
+
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-badge mb-3"><i class="fas fa-star me-2"></i>Serviciu Premium de Inchirieri Auto</div>
+        <h1 class="hero-title">Gaseste Masina<br><span class="text-warning">Perfecta</span> pentru Tine</h1>
+        <p class="hero-subtitle">Peste 50 de modele disponibile. Rezerva rapid, conduce confortabil.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-warning btn-lg fw-bold px-4"><i class="fas fa-search me-2"></i>Cauta masini</a>
+            @if (!User.Identity!.IsAuthenticated)
+            {<a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg px-4"><i class="fas fa-user-plus me-2"></i>Inregistrare gratuita</a>}
+        </div>
+    </div>
+</section>
+
+<section class="stats-bar">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3"><div class="stat-number">50+</div><div class="stat-label">Masini disponibile</div></div>
+            <div class="col-6 col-md-3"><div class="stat-number">4</div><div class="stat-label">Locatii de ridicare</div></div>
+            <div class="col-6 col-md-3"><div class="stat-number">24/7</div><div class="stat-label">Asistenta clienti</div></div>
+            <div class="col-6 col-md-3"><div class="stat-number">100%</div><div class="stat-label">Clienti multumiti</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Masini Disponibile</h2>
+            <p class="section-subtitle">Alege din colectia noastra premium</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var car in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="car-card h-100">
+                        <div class="car-card-image">
+                            <img src="@(car.ImageUrl ?? "/images/cars/default-car.png")" alt="@car.Brand @car.Model" onerror="this.src='/images/cars/default-car.png'"/>
+                            <span class="car-badge">@car.CarCategory?.Name</span>
+                        </div>
+                        <div class="car-card-body">
+                            <h5 class="car-name">@car.Brand @car.Model <span class="car-year">@car.Year</span></h5>
+                            <div class="car-meta">
+                                <span><i class="fas fa-map-marker-alt me-1"></i>@car.Location?.City</span>
+                                @if (car.Reviews.Any()) {<span><i class="fas fa-star text-warning me-1"></i>@car.AverageRating.ToString("F1")</span>}
+                            </div>
+                            <div class="car-footer">
+                                <div class="car-price"><span class="price-amount">@car.PricePerDay</span> RON<span class="price-per">/zi</span></div>
+                                <div class="d-flex gap-2">
+                                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-dark btn-sm">Detalii</a>
+                                    @if (User.Identity!.IsAuthenticated)
+                                    {<a asp-controller="Rentals" asp-action="Rent" asp-route-carId="@car.Id" class="btn btn-warning btn-sm fw-bold">Inchiriaza</a>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-dark btn-lg px-5"><i class="fas fa-th-large me-2"></i>Vezi toate masinile</a>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works py-5">
+    <div class="container">
+        <div class="section-header"><h2 class="section-title text-white">Cum functioneaza?</h2></div>
+        <div class="row g-4 text-center">
+            <div class="col-md-3"><div class="step-card"><div class="step-icon"><i class="fas fa-user-plus"></i></div><div class="step-number">01</div><h5>Inregistreaza-te</h5><p>Creeaza un cont gratuit</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-icon"><i class="fas fa-search"></i></div><div class="step-number">02</div><h5>Alege masina</h5><p>Filtreaza dupa pret sau categorie</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-icon"><i class="fas fa-calendar-check"></i></div><div class="step-number">03</div><h5>Rezerva</h5><p>Alege datele si plateste online</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-icon"><i class="fas fa-car-side"></i></div><div class="step-number">04</div><h5>Conduce!</h5><p>Ridica masina si bucura-te</p></div></div>
+        </div>
+    </div>
+</section>

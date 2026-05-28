@@ -1,0 +1,90 @@
+@model CarRentalApp.Models.Car
+@{ ViewData["Title"]=$"{Model.Brand} {Model.Model}"; }
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-warning">Acasa</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cars" asp-action="Index" class="text-warning">Masini</a></li>
+            <li class="breadcrumb-item active">@Model.Brand @Model.Model</li>
+        </ol>
+    </nav>
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <img src="@(Model.ImageUrl ?? "/images/cars/default-car.png")" class="img-fluid rounded-3 w-100" style="max-height:420px;object-fit:cover" onerror="this.src='/images/cars/default-car.png'"/>
+        </div>
+        <div class="col-lg-5">
+            <div class="details-card h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-warning text-dark mb-2">@Model.CarCategory?.Name</span>
+                        <h2 class="fw-bold mb-0">@Model.Brand @Model.Model</h2>
+                        <p class="text-muted">@Model.Year</p>
+                    </div>
+                    @if (Model.IsAvailable)
+                    {<span class="badge bg-success fs-6 px-3 py-2"><i class="fas fa-check me-1"></i>Disponibil</span>}
+                    else
+                    {<span class="badge bg-danger fs-6 px-3 py-2"><i class="fas fa-ban me-1"></i>Ocupat</span>}
+                </div>
+                <div class="detail-rows mb-4">
+                    <div class="detail-row"><i class="fas fa-map-marker-alt text-warning"></i><span>@Model.Location?.Name, @Model.Location?.City</span></div>
+                    <div class="detail-row"><i class="fas fa-star text-warning"></i><span>@(Model.Reviews.Any() ? $"{Model.AverageRating:F1}/5 ({Model.Reviews.Count} recenzii)" : "Fara recenzii inca")</span></div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Description)){<p class="text-muted mb-4">@Model.Description</p>}
+                <div class="price-box mb-4">
+                    <div class="text-muted small">Pret per zi</div>
+                    <div class="display-5 fw-bold text-warning">@Model.PricePerDay <span class="fs-6 text-muted fw-normal">RON</span></div>
+                </div>
+                @if (User.Identity!.IsAuthenticated && Model.IsAvailable)
+                {<a asp-controller="Rentals" asp-action="Rent" asp-route-carId="@Model.Id" class="btn btn-warning btn-lg fw-bold w-100"><i class="fas fa-key me-2"></i>Inchiriaza acum</a>}
+                else if (!User.Identity!.IsAuthenticated)
+                {<a asp-controller="Account" asp-action="Login" class="btn btn-outline-warning btn-lg w-100"><i class="fas fa-right-to-bracket me-2"></i>Autentifica-te pentru a inchiria</a>}
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="d-flex gap-2 mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary flex-fill"><i class="fas fa-edit me-1"></i>Editeaza</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger flex-fill"><i class="fas fa-trash me-1"></i>Sterge</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="fw-bold mb-4"><i class="fas fa-comments text-warning me-2"></i>Recenzii (@Model.Reviews.Count)</h4>
+        @if (User.Identity!.IsAuthenticated)
+        {
+            <div class="review-form-card mb-4">
+                <h6 class="fw-bold mb-3">Adauga o recenzie</h6>
+                <form asp-controller="Reviews" asp-action="Create" method="post">
+                    <input type="hidden" name="CarId" value="@Model.Id"/>
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <select name="Rating" class="form-select" style="max-width:220px">
+                            @for (int i=5;i>=1;i--){<option value="@i">@(new string('★',i))@(new string('☆',5-i)) (@i/5)</option>}
+                        </select>
+                    </div>
+                    <div class="mb-3"><textarea name="Comment" class="form-control" rows="3" placeholder="Descrie experienta ta..." required></textarea></div>
+                    <button type="submit" class="btn btn-warning fw-bold px-4"><i class="fas fa-paper-plane me-2"></i>Trimite recenzia</button>
+                </form>
+            </div>
+        }
+        @foreach (var rv in Model.Reviews.OrderByDescending(r=>r.CreatedAt))
+        {
+            <div class="review-card mb-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="fw-bold">@(rv.User?.FullName ?? "Utilizator")</span>
+                        <span class="text-warning ms-2">@(new string('★',rv.Rating))@(new string('☆',5-rv.Rating))</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted">@rv.CreatedAt.ToString("dd MMM yyyy")</small>
+                        @if (User.IsInRole("Admin"))
+                        {<a asp-controller="Reviews" asp-action="Delete" asp-route-id="@rv.Id" asp-route-carId="@Model.Id" class="btn btn-sm btn-outline-danger py-0 px-1"><i class="fas fa-trash fa-xs"></i></a>}
+                    </div>
+                </div>
+                <p class="text-muted mt-2 mb-0">@rv.Comment</p>
+            </div>
+        }
+        @if (!Model.Reviews.Any()){<p class="text-muted fst-italic">Fii primul care lasa o recenzie!</p>}
+    </div>
+</div>

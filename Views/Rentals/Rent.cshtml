@@ -1,0 +1,70 @@
+@model CarRentalApp.Models.ViewModels.RentViewModel
+@{ ViewData["Title"]="Inchiriaza masina"; }
+<div class="container py-4" style="max-width:700px">
+    <div class="admin-form-card">
+        @if (Model.Car != null)
+        {
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <img src="@(Model.Car.ImageUrl ?? "/images/cars/default-car.png")" class="rounded-3" style="width:100px;height:70px;object-fit:cover" onerror="this.src='/images/cars/default-car.png'"/>
+                <div><h4 class="fw-bold mb-0">@Model.Car.Brand @Model.Car.Model</h4><p class="text-muted mb-0">@Model.Car.PricePerDay RON/zi</p></div>
+            </div><hr/>
+        }
+        <h4 class="fw-bold mb-4"><i class="fas fa-calendar-plus text-warning me-2"></i>Detalii inchiriere</h4>
+        <form asp-action="Rent" method="post" id="rentForm">
+            <input type="hidden" asp-for="CarId"/>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+            <div class="row mb-3">
+                <div class="col"><label asp-for="StartDate" class="form-label fw-semibold">Data ridicare</label><input asp-for="StartDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" id="startDate"/><span asp-validation-for="StartDate" class="text-danger small"></span></div>
+                <div class="col"><label asp-for="EndDate" class="form-label fw-semibold">Data returnare</label><input asp-for="EndDate" class="form-control" type="date" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" id="endDate"/><span asp-validation-for="EndDate" class="text-danger small"></span></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label asp-for="PickupLocationId" class="form-label fw-semibold">Locatie ridicare</label>
+                    <select asp-for="PickupLocationId" class="form-select">
+                        <option value="">-- Alege locatia --</option>
+                        @foreach (var l in (Model.Locations ?? new())){<option value="@l.Id">@l.Name - @l.City</option>}
+                    </select>
+                </div>
+                <div class="col">
+                    <label asp-for="ReturnLocationId" class="form-label fw-semibold">Locatie returnare</label>
+                    <select asp-for="ReturnLocationId" class="form-select">
+                        <option value="">-- Alege locatia --</option>
+                        @foreach (var l in (Model.Locations ?? new())){<option value="@l.Id">@l.Name - @l.City</option>}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Metoda de plata</label>
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="form-check payment-option"><input class="form-check-input" type="radio" name="PaymentMethod" value="Card" id="pCard" checked/><label class="form-check-label" for="pCard"><i class="fas fa-credit-card me-2 text-warning"></i>Card bancar</label></div>
+                    <div class="form-check payment-option"><input class="form-check-input" type="radio" name="PaymentMethod" value="Cash" id="pCash"/><label class="form-check-label" for="pCash"><i class="fas fa-money-bill me-2 text-success"></i>Numerar</label></div>
+                </div>
+            </div>
+            @if (Model.Car != null)
+            {
+                <div class="price-preview-box mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Estimare pret:</span>
+                        <span class="fs-5 fw-bold text-warning" id="pricePreview">-</span>
+                    </div>
+                    <small style="color:rgba(255,255,255,.6)">@Model.Car.PricePerDay RON/zi</small>
+                </div>
+            }
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-warning fw-bold px-4"><i class="fas fa-check-circle me-2"></i>Confirma inchirierea</button>
+                <a asp-controller="Cars" asp-action="Index" class="btn btn-outline-secondary px-4">Anuleaza</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+const ppd=@(Model.Car?.PricePerDay??0);
+function upd(){
+    const s=new Date(document.getElementById('startDate').value),e=new Date(document.getElementById('endDate').value);
+    if(s&&e&&e>s){const d=Math.max(1,Math.round((e-s)/86400000));document.getElementById('pricePreview').textContent=(d*ppd).toFixed(2)+' RON ('+d+' zile)';}
+}
+document.getElementById('startDate')?.addEventListener('change',upd);
+document.getElementById('endDate')?.addEventListener('change',upd);
+</script>}

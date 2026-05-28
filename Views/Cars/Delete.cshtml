@@ -1,0 +1,18 @@
+@model CarRentalApp.Models.Car
+@{ ViewData["Title"]="Sterge masina"; }
+<div class="container py-5" style="max-width:500px">
+    <div class="admin-form-card text-center">
+        <div class="text-danger mb-3" style="font-size:3rem"><i class="fas fa-triangle-exclamation"></i></div>
+        <h3 class="fw-bold mb-2">Confirma stergerea</h3>
+        <p class="text-muted mb-4">Esti sigur ca vrei sa stergi <strong>@Model.Brand @Model.Model (@Model.Year)</strong>?</p>
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {<img src="@Model.ImageUrl" class="rounded-3 mb-4 img-fluid" style="max-height:180px;object-fit:cover" onerror="this.style.display='none'"/>}
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id"/>
+            <div class="d-flex gap-3 justify-content-center">
+                <button type="submit" class="btn btn-danger fw-bold px-4"><i class="fas fa-trash me-2"></i>Da, sterge</button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Anuleaza</a>
+            </div>
+        </form>
+    </div>
+</div>
