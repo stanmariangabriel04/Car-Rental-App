@@ -38,7 +38,7 @@ Apasa F5 sau Ctrl+F5.
 - **Admin** - acces complet (CRUD masini, toate inchirierile)
 - **User** - inchiriaza masini, lasa recenzii, gestioneaza profil
 
-## Pagini implementate (7+)
+## Pagini implementate
 1. Home/Index - Landing page
 2. Cars/Index - Lista masini cu filtrare
 3. Cars/Details - Detalii masina + recenzii
