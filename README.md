@@ -1,52 +1,59 @@
-# CarRental - Proiect PAW
+# CarRental - Web Application Design Project
 
-## Pași pentru rulare
+## Steps to run
 
-### 1. Deschide solutia
-Deschide `CarRentalApp.sln` in Visual Studio 2022.
+### 1. Open the solution
 
-### 2. Verifica connection string
-In `CarRentalApp/appsettings.json`, connection string-ul implicit este:
-```
+Open `CarRentalApp.sln` in Visual Studio.
+
+### 2. Check the connection string
+
+In CarRentalApp/appsettings.json, the default connection string is:
+
 Server=(localdb)\mssqllocaldb;Database=CarRentalDb;Trusted_Connection=True
-```
 
-### 3. Aplica migratiile (Package Manager Console)
-```
+### 3. Apply migrations (Package Manager Console)
 Add-Migration InitialCreate
+
 Update-Database
-```
 
-### 4. Ruleaza aplicatia
-Apasa F5 sau Ctrl+F5.
 
-## Cont Admin (creat automat la prima rulare)
+### 4. Run the application
+
+Press F5 or Ctrl+F5.
+
+## Admin account (created automatically on first run)
+
 - **Email:** admin@carrental.ro
-- **Parola:** Admin123!
+- **Password:** Admin123!
 
-## Structura BD (6 tabele + Identity)
-| Tabel | Descriere |
-|-------|-----------|
-| Cars | Masinile disponibile |
-| CarCategories | Sedan, SUV, Sport, Electric, Minivan |
-| Locations | Locatii ridicare/returnare |
-| Rentals | Inchirierile facute |
-| Payments | Platile aferente |
-| Reviews | Recenzii utilizatori |
+## Database structure (6 tables + Identity)
 
-## Roluri
-- **Admin** - acces complet (CRUD masini, toate inchirierile)
-- **User** - inchiriaza masini, lasa recenzii, gestioneaza profil
+ Table          Description
 
-## Pagini implementate
+* Cars: Available cars
+* CarCategories: Sedan, SUV, Sport, Electric, Minivan
+* Locations: Pickup/return locations
+* Rentals: Rentals made by users
+* Payments: Payments associated with rentals
+* Reviews: User reviews
+
+## Roles
+
+- **Admin** - full access (CRUD on cars, all rentals)
+- **User** - rents cars, leaves reviews, manages profile
+
+## Implemented pages
+
 1. Home/Index - Landing page
-2. Cars/Index - Lista masini cu filtrare
-3. Cars/Details - Detalii masina + recenzii
-4. Account/Login - Formular login stilizat
-5. Account/Register - Formular register stilizat
-6. Rentals/MyRentals - Inchirierile utilizatorului
-7. Profile/Index - Profil + upload poza
+2. Cars/Index - Car list with filtering
+3. Cars/Details - Car details + reviews
+4. Account/Login - Styled login form
+5. Account/Register - Styled registration form
+6. Rentals/MyRentals - User's rentals
+7. Profile/Index - Profile + photo upload
 
 **Admin extra:**
+
 - Cars/Create, Cars/Edit, Cars/Delete
-- Rentals/Index (toate inchirierile)
+- Rentals/Index (all rentals)
