@@ -1,4 +1,4 @@
-# CarRental - Web Application Design Project
+# CarRental
 
 ## Steps to run
 
